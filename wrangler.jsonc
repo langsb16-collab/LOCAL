@@ -25,7 +25,7 @@
     {
       "binding": "DB",
       "database_name": "job-matching-production",
-      "database_id": "local-db-for-development"
+      "database_id": "f9e2e853-5ead-4fe5-abff-f3c8315752e6"
     }
   ]
   // "ai": {
