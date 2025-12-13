@@ -176,26 +176,48 @@ app.get('/', (c) => {
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
         <style>
-          body { font-family: 'Noto Sans KR', sans-serif; }
-          .job-card { transition: transform 0.2s, box-shadow 0.2s; }
-          .job-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-          .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+          body { 
+            font-family: 'Noto Sans KR', sans-serif; 
+            -webkit-font-smoothing: antialiased;
+          }
+          .job-card { 
+            transition: transform 0.2s, box-shadow 0.2s;
+          }
+          .job-card:active { 
+            transform: scale(0.98);
+          }
+          @media (min-width: 768px) {
+            .job-card:hover { 
+              transform: translateY(-4px); 
+              box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            }
+          }
+          .stat-card { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+          }
+          /* 모바일 최적화 */
+          @media (max-width: 640px) {
+            .mobile-compact { padding: 0.75rem !important; }
+            .mobile-text-sm { font-size: 0.875rem !important; }
+            .mobile-text-xs { font-size: 0.75rem !important; }
+          }
         </style>
     </head>
     <body class="bg-gray-50">
         <!-- Header -->
-        <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
-            <div class="max-w-7xl mx-auto px-4 py-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h1 class="text-3xl font-bold">
-                            <i class="fas fa-briefcase mr-2"></i>
-                            ${t(lang, 'app_title')}
+        <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-3 py-3 sm:px-4 sm:py-4">
+                <div class="flex justify-between items-center gap-2">
+                    <div class="flex-1 min-w-0">
+                        <h1 class="text-base sm:text-xl md:text-2xl font-bold truncate">
+                            <i class="fas fa-briefcase mr-1 sm:mr-2 text-sm sm:text-base"></i>
+                            <span class="hidden sm:inline">${t(lang, 'app_title')}</span>
+                            <span class="sm:hidden">일자리 매칭</span>
                         </h1>
-                        <p class="text-blue-100 mt-2">${t(lang, 'app_subtitle')}</p>
+                        <p class="text-blue-100 text-xs sm:text-sm mt-0.5 sm:mt-1 hidden sm:block">${t(lang, 'app_subtitle')}</p>
                     </div>
-                    <div class="flex gap-2">
-                        <select id="langSelect" class="bg-white text-gray-800 px-4 py-2 rounded-lg shadow">
+                    <div>
+                        <select id="langSelect" class="bg-white text-gray-800 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg shadow text-xs sm:text-sm">
                             <option value="ko" ${lang === 'ko' ? 'selected' : ''}>한국어</option>
                             <option value="en" ${lang === 'en' ? 'selected' : ''}>English</option>
                             <option value="zh" ${lang === 'zh' ? 'selected' : ''}>中文</option>
@@ -209,34 +231,35 @@ app.get('/', (c) => {
             </div>
         </header>
 
-        <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="max-w-7xl mx-auto px-3 py-3 sm:px-4 sm:py-6">
             <!-- Statistics Dashboard -->
-            <div id="statsSection" class="mb-8">
-                <h2 class="text-2xl font-bold mb-4">
-                    <i class="fas fa-chart-bar mr-2"></i>
-                    ${t(lang, 'stats_title')}
+            <div id="statsSection" class="mb-4 sm:mb-6">
+                <h2 class="text-lg sm:text-xl font-bold mb-3 px-1">
+                    <i class="fas fa-chart-bar mr-1.5 text-sm sm:text-base"></i>
+                    <span class="hidden sm:inline">${t(lang, 'stats_title')}</span>
+                    <span class="sm:hidden">통계</span>
                 </h2>
-                <div id="statsCards" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div id="statsCards" class="grid grid-cols-3 gap-2 sm:gap-4 mb-4">
                     <!-- Stats will be loaded here -->
                 </div>
             </div>
 
             <!-- Filter Section -->
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+            <div class="bg-white rounded-lg shadow-md p-3 sm:p-4 mb-4 sm:mb-6">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
                             ${t(lang, 'search_jobs')}
                         </label>
                         <input type="text" id="searchInput" 
-                               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                               class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500"
                                placeholder="${t(lang, 'search_placeholder')}">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
                             ${t(lang, 'employment_type')}
                         </label>
-                        <select id="targetTypeSelect" class="w-full px-4 py-2 border rounded-lg">
+                        <select id="targetTypeSelect" class="w-full px-2 py-2 text-sm border rounded-lg">
                             <option value="all">${t(lang, 'all')}</option>
                             <option value="senior">${t(lang, 'senior_jobs')}</option>
                             <option value="female">${t(lang, 'female_jobs')}</option>
@@ -244,18 +267,18 @@ app.get('/', (c) => {
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
                             ${t(lang, 'municipality')}
                         </label>
-                        <select id="municipalitySelect" class="w-full px-4 py-2 border rounded-lg">
+                        <select id="municipalitySelect" class="w-full px-2 py-2 text-sm border rounded-lg">
                             <option value="">${t(lang, 'all')}</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
                             ${t(lang, 'category')}
                         </label>
-                        <select id="categorySelect" class="w-full px-4 py-2 border rounded-lg">
+                        <select id="categorySelect" class="w-full px-2 py-2 text-sm border rounded-lg">
                             <option value="">${t(lang, 'all')}</option>
                         </select>
                     </div>
@@ -263,7 +286,7 @@ app.get('/', (c) => {
             </div>
 
             <!-- Jobs List -->
-            <div id="jobsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div id="jobsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 <!-- Jobs will be loaded here -->
             </div>
         </div>
@@ -284,31 +307,25 @@ app.get('/', (c) => {
               const stats = response.data;
               
               const statsHTML = \`
-                <div class="stat-card text-white rounded-lg p-6">
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <p class="text-blue-100 text-sm">${t(lang, 'total_jobs')}</p>
-                      <p class="text-3xl font-bold">\${stats.total_jobs}</p>
-                    </div>
-                    <i class="fas fa-briefcase text-4xl opacity-50"></i>
+                <div class="stat-card text-white rounded-lg p-3 sm:p-5">
+                  <div class="flex flex-col items-center text-center">
+                    <i class="fas fa-briefcase text-2xl sm:text-3xl opacity-70 mb-1.5"></i>
+                    <p class="text-blue-100 text-xs sm:text-sm">${t(lang, 'total_jobs')}</p>
+                    <p class="text-2xl sm:text-3xl font-bold mt-0.5">\${stats.total_jobs}</p>
                   </div>
                 </div>
-                <div class="stat-card text-white rounded-lg p-6">
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <p class="text-blue-100 text-sm">${t(lang, 'total_applications')}</p>
-                      <p class="text-3xl font-bold">\${stats.total_applications}</p>
-                    </div>
-                    <i class="fas fa-file-alt text-4xl opacity-50"></i>
+                <div class="stat-card text-white rounded-lg p-3 sm:p-5">
+                  <div class="flex flex-col items-center text-center">
+                    <i class="fas fa-file-alt text-2xl sm:text-3xl opacity-70 mb-1.5"></i>
+                    <p class="text-blue-100 text-xs sm:text-sm">${t(lang, 'total_applications')}</p>
+                    <p class="text-2xl sm:text-3xl font-bold mt-0.5">\${stats.total_applications}</p>
                   </div>
                 </div>
-                <div class="stat-card text-white rounded-lg p-6">
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <p class="text-blue-100 text-sm">${t(lang, 'total_users')}</p>
-                      <p class="text-3xl font-bold">\${stats.total_users}</p>
-                    </div>
-                    <i class="fas fa-users text-4xl opacity-50"></i>
+                <div class="stat-card text-white rounded-lg p-3 sm:p-5">
+                  <div class="flex flex-col items-center text-center">
+                    <i class="fas fa-users text-2xl sm:text-3xl opacity-70 mb-1.5"></i>
+                    <p class="text-blue-100 text-xs sm:text-sm">${t(lang, 'total_users')}</p>
+                    <p class="text-2xl sm:text-3xl font-bold mt-0.5">\${stats.total_users}</p>
                   </div>
                 </div>
               \`;
@@ -370,47 +387,47 @@ app.get('/', (c) => {
 
               if (jobs.length === 0) {
                 document.getElementById('jobsList').innerHTML = \`
-                  <div class="col-span-full text-center py-12">
-                    <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
-                    <p class="text-gray-500 text-lg">${t(lang, 'no_jobs')}</p>
+                  <div class="col-span-full text-center py-8 sm:py-12">
+                    <i class="fas fa-inbox text-4xl sm:text-6xl text-gray-300 mb-3"></i>
+                    <p class="text-gray-500 text-sm sm:text-base">${t(lang, 'no_jobs')}</p>
                   </div>
                 \`;
                 return;
               }
 
               const jobsHTML = jobs.map(job => \`
-                <div class="job-card bg-white rounded-lg shadow-md p-6 cursor-pointer">
-                  <div class="flex justify-between items-start mb-3">
-                    <h3 class="text-xl font-bold text-gray-800">\${job['title_${lang}'] || job.title_ko}</h3>
-                    <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">
+                <div class="job-card bg-white rounded-lg shadow-md p-4 sm:p-5 cursor-pointer">
+                  <div class="flex justify-between items-start mb-2 sm:mb-3 gap-2">
+                    <h3 class="text-base sm:text-lg font-bold text-gray-800 flex-1 line-clamp-2">\${job['title_${lang}'] || job.title_ko}</h3>
+                    <span class="px-2 py-0.5 sm:px-3 sm:py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full whitespace-nowrap">
                       \${job.target_type === 'all' ? '${t(lang, 'all')}' : job.target_type}
                     </span>
                   </div>
-                  <p class="text-gray-600 mb-4 line-clamp-2">\${job['description_${lang}'] || job.description_ko}</p>
-                  <div class="space-y-2 text-sm text-gray-600">
-                    <div class="flex items-center">
-                      <i class="fas fa-building w-5 text-blue-500"></i>
-                      <span>\${job.company_name}</span>
+                  <p class="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2">\${job['description_${lang}'] || job.description_ko}</p>
+                  <div class="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-600">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-building w-4 text-blue-500 flex-shrink-0"></i>
+                      <span class="truncate">\${job.company_name}</span>
                     </div>
-                    <div class="flex items-center">
-                      <i class="fas fa-map-marker-alt w-5 text-blue-500"></i>
-                      <span>\${job.location}</span>
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-map-marker-alt w-4 text-blue-500 flex-shrink-0"></i>
+                      <span class="truncate">\${job.location}</span>
                     </div>
-                    <div class="flex items-center">
-                      <i class="fas fa-clock w-5 text-blue-500"></i>
-                      <span>\${job.employment_type} · \${job.work_hours || 'N/A'}</span>
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-clock w-4 text-blue-500 flex-shrink-0"></i>
+                      <span class="truncate">\${job.employment_type} · \${job.work_hours || 'N/A'}</span>
                     </div>
-                    <div class="flex items-center">
-                      <i class="fas fa-won-sign w-5 text-blue-500"></i>
-                      <span>\${job.salary_min?.toLocaleString()} - \${job.salary_max?.toLocaleString()} 원</span>
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-won-sign w-4 text-blue-500 flex-shrink-0"></i>
+                      <span class="truncate">\${job.salary_min?.toLocaleString()} - \${job.salary_max?.toLocaleString()} 원</span>
                     </div>
                   </div>
-                  <div class="mt-4 pt-4 border-t flex justify-between items-center">
-                    <span class="text-xs text-gray-500">
-                      <i class="fas fa-eye mr-1"></i>
-                      ${t(lang, 'views')}: \${job.views || 0}
+                  <div class="mt-3 pt-3 border-t flex justify-between items-center gap-2">
+                    <span class="text-xs text-gray-500 flex items-center gap-1">
+                      <i class="fas fa-eye"></i>
+                      <span class="hidden sm:inline">${t(lang, 'views')}: </span>\${job.views || 0}
                     </span>
-                    <button onclick="applyJob(\${job.id})" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    <button onclick="applyJob(\${job.id})" class="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-600 text-white text-xs sm:text-sm rounded-lg hover:bg-blue-700 active:scale-95 transition whitespace-nowrap">
                       ${t(lang, 'apply')}
                     </button>
                   </div>
